@@ -232,8 +232,21 @@ function getNextFridayThe13th(date) {
  * Date(2024, 5, 1) => 2
  * Date(2024, 10, 10) => 4
  */
-function getQuarter(/* date */) {
-  throw new Error('Not implemented');
+function getQuarter(date) {
+  const month = date.getMonth();
+  if (month >= 0 && month <= 3) {
+    return 1;
+  }
+  if (month >= 4 && month <= 6) {
+    return 2;
+  }
+  if (month >= 7 && month <= 9) {
+    return 3;
+  }
+  if (month >= 10 && month <= 12) {
+    return 4;
+  }
+  return `invalid date`;
 }
 
 /**
@@ -254,8 +267,23 @@ function getQuarter(/* date */) {
  * { start: '01-01-2024', end: '15-01-2024' }, 1, 3 => ['01-01-2024', '05-01-2024', '09-01-2024', '13-01-2024']
  * { start: '01-01-2024', end: '10-01-2024' }, 1, 1 => ['01-01-2024', '03-01-2024', '05-01-2024', '07-01-2024', '09-01-2024']
  */
-function getWorkSchedule(/* period, countWorkDays, countOffDays */) {
-  throw new Error('Not implemented');
+function getWorkSchedule(period, countWorkDays, countOffDays) {
+  const partsStart = period.start.split('-');
+  const partsEnd = period.end.split('-');
+  const start = new Date(partsStart[2], partsStart[1] - 1, partsStart[0]);
+  const end = new Date(partsEnd[2], partsEnd[1] - 1, partsEnd[0]);
+  const schedule = [];
+  while (start <= end) {
+    for (let i = 0; i < countWorkDays; i += 1) {
+      if (start > end) {
+        break;
+      }
+      schedule.push(start.toLocaleDateString('en-GB').replaceAll('/', '-'));
+      start.setDate(start.getDate() + 1);
+    }
+    start.setDate(start.getDate() + countOffDays);
+  }
+  return schedule;
 }
 
 /**
@@ -270,8 +298,9 @@ function getWorkSchedule(/* period, countWorkDays, countOffDays */) {
  * Date(2022, 2, 1) => false
  * Date(2020, 2, 1) => true
  */
-function isLeapYear(/* date */) {
-  throw new Error('Not implemented');
+function isLeapYear(date) {
+  const year = date.getFullYear();
+  return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
 }
 
 module.exports = {
